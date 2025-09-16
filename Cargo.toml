@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = [
+    "programs/job-platform"
+]
+
+[workspace.dependencies]
+anchor-lang = "0.31.1"
+
+[profile.release]
+overflow-checks = true

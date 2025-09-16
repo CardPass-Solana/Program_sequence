@@ -1,0 +1,144 @@
+# 프로필 생성 테스트 가이드
+
+## 1. 프로그램 배포
+```bash
+# 현재 디렉토리에서 실행
+cd "/Users/hyeokx/Solana Startup Village"
+
+# Devnet 설정 및 deployer 지갑으로 배포
+solana config set --url https://api.devnet.solana.com
+solana config set --keypair deployer-wallet.json
+anchor build
+anchor deploy
+```
+
+## 2. 프로필 생성 테스트 준비
+
+### Job Seeker 지갑으로 테스트할 예정
+- **지갑 주소**: 7ECktWseoSfzFUQKbp8wbJSAusWw8YeQiq2Be51LZR3n
+- **파일**: job-seeker-wallet.json
+
+### 프로필 PDA 계산 방법
+```
+PDA Seeds: ["profile", user_wallet_pubkey]
+Program ID: 6ZcUqLAydNswng5yphmzZRAUkVhY2Kj2rpVAU55vhkrc
+```
+
+## 3. TypeScript 테스트 코드 실행
+
+### 테스트 실행 명령어
+```bash
+# 테스트 파일 실행
+npm test
+# 또는
+npx ts-mocha -p ./tsconfig.json -t 1000000 tests/basic-test.ts
+```
+
+### 수동으로 프로필 생성 테스트
+```typescript
+// tests/profile-creation-test.ts 파일을 만들어서 실행
+
+import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
+import { JobPlatform } from "../target/types/job_platform";
+import { Keypair } from "@solana/web3.js";
+
+describe("Manual Profile Creation Test", () => {
+  const provider = anchor.AnchorProvider.env();
+  anchor.setProvider(provider);
+
+  const program = anchor.workspace.JobPlatform as Program<JobPlatform>;
+
+  // Job Seeker 지갑 로드
+  const jobSeekerKeypair = Keypair.fromSecretKey(
+    new Uint8Array(require("../job-seeker-wallet.json"))
+  );
+
+  it("Creates a job seeker profile", async () => {
+    // PDA 계산
+    const [profilePda] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("profile"), jobSeekerKeypair.publicKey.toBuffer()],
+      program.programId
+    );
+
+    console.log("Job Seeker Wallet:", jobSeekerKeypair.publicKey.toString());
+    console.log("Profile PDA:", profilePda.toString());
+
+    // 프로필 생성 트랜잭션
+    const tx = await program.methods
+      .createProfile({
+        name: "김개발",
+        bio: "풀스택 개발자입니다",
+        skills: ["JavaScript", "TypeScript", "Solana"],
+        experience: "3년차 개발자",
+        location: "서울",
+        contactInfo: "dev@example.com"
+      })
+      .accounts({
+        profile: profilePda,
+        owner: jobSeekerKeypair.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([jobSeekerKeypair])
+      .rpc();
+
+    console.log("Transaction signature:", tx);
+
+    // 생성된 프로필 확인
+    const profile = await program.account.profile.fetch(profilePda);
+    console.log("Created profile:", profile);
+  });
+});
+```
+
+## 4. Solana CLI로 직접 테스트 (고급)
+
+### 프로필 생성 명령어 (복잡함 - TypeScript 권장)
+```bash
+# Job Seeker 지갑으로 전환
+solana config set --keypair job-seeker-wallet.json
+
+# PDA 주소 계산 (수동으로 계산 필요)
+# Seeds: ["profile", 7ECktWseoSfzFUQKbp8wbJSAusWw8YeQiq2Be51LZR3n]
+```
+
+## 5. 테스트 실행 순서
+
+1. **프로그램 배포**:
+   ```bash
+   solana config set --keypair deployer-wallet.json
+   anchor build && anchor deploy
+   ```
+
+2. **테스트 실행**:
+   ```bash
+   npm test
+   ```
+
+3. **결과 확인**:
+   - 트랜잭션 서명 출력
+   - 생성된 프로필 데이터 출력
+   - Solana Explorer에서 확인: https://explorer.solana.com/tx/[SIGNATURE]?cluster=devnet
+
+## 6. 예상 출력
+```
+✓ Creates a job seeker profile
+Job Seeker Wallet: 7ECktWseoSfzFUQKbp8wbJSAusWw8YeQiq2Be51LZR3n
+Profile PDA: [계산된_PDA_주소]
+Transaction signature: [트랜잭션_서명]
+Created profile: {
+  owner: 7ECktWseoSfzFUQKbp8wbJSAusWw8YeQiq2Be51LZR3n,
+  name: "김개발",
+  bio: "풀스택 개발자입니다",
+  skills: ["JavaScript", "TypeScript", "Solana"],
+  experience: "3년차 개발자",
+  location: "서울",
+  contactInfo: "dev@example.com",
+  createdAt: [타임스탬프]
+}
+```
+
+## 7. 문제 해결
+- **"Account does not exist" 에러**: 지갑에 SOL이 부족 (airdrop 필요)
+- **"Program not found" 에러**: 프로그램 배포 실패 또는 잘못된 Program ID
+- **PDA 계산 오류**: Seeds 순서나 타입 확인

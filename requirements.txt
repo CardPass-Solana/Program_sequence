@@ -1,0 +1,58 @@
+# Solana Job Platform - 테스트용 지갑 정보
+# Test Wallet Credentials for Devnet Deployment
+
+===============================================================================
+DEPLOYER WALLET (프로그램 배포용)
+===============================================================================
+Address: 3yBXrUQPs5pXzbU2GYhEWd4fXDh8zipJSvFmsVaQrHN1
+Mnemonic Seed: adult similar answer dish brush egg amused weekend trophy mushroom scale toward
+File: deployer-wallet.json
+
+===============================================================================
+JOB SEEKER WALLET (구직자 테스트용)
+===============================================================================
+Address: 7ECktWseoSfzFUQKbp8wbJSAusWw8YeQiq2Be51LZR3n
+Mnemonic Seed: ancient chief crisp prosper federal inch coconut century iron way crunch earn
+File: job-seeker-wallet.json
+
+===============================================================================
+RECRUITER WALLET (채용담당자 테스트용)
+===============================================================================
+Address: FCNNLzs2igj7eYCiq1fA728pinczwHbTwE1RGw7rAXnX
+Mnemonic Seed: tuition relief camera approve reveal success remain achieve warm input state cake
+File: recruiter-wallet.json
+
+===============================================================================
+PROGRAM INFORMATION
+===============================================================================
+Program ID: 2bZY4L2gTev6uBoxBoxUefRMJFM61xay53PvPgkxeeuY
+Network: Devnet
+Explorer: https://explorer.solana.com/address/2bZY4L2gTev6uBoxBoxUefRMJFM61xay53PvPgkxeeuY?cluster=devnet
+Deployment Signature: 5ingLreZSK36QfaXMWYp8wTMQnfid3iTfgcKeLGrZGGNaXioKhQDC3oM9Fu3F88Rz8EMCTkxQwWUarfRzwm1o44x
+
+===============================================================================
+배포 전 준비사항
+===============================================================================
+1. 각 지갑에 devnet SOL 에어드롭 필요:
+   solana airdrop 2 3yBXrUQPs5pXzbU2GYhEWd4fXDh8zipJSvFmsVaQrHN1 --url https://api.devnet.solana.com
+   solana airdrop 2 7ECktWseoSfzFUQKbp8wbJSAusWw8YeQiq2Be51LZR3n --url https://api.devnet.solana.com
+   solana airdrop 2 FCNNLzs2igj7eYCiq1fA728pinczwHbTwE1RGw7rAXnX --url https://api.devnet.solana.com
+
+2. 배포 명령어:
+   solana config set --url https://api.devnet.solana.com
+   solana config set --keypair deployer-wallet.json
+   anchor build
+   anchor deploy
+
+3. 테스트 시나리오:
+   - Deployer: 프로그램 배포 및 관리
+   - Job Seeker: 프로필 생성, 잡 지원, 스카우트 응답
+   - Recruiter: 잡 생성, 지원서 검토, 스카우트 발송
+
+===============================================================================
+보안 주의사항
+===============================================================================
+- 이 지갑들은 테스트 전용입니다
+- 메인넷에서는 절대 사용하지 마세요
+- 실제 SOL을 넣지 마세요
+- 테스트 완료 후 지갑 정보를 안전하게 보관하세요
