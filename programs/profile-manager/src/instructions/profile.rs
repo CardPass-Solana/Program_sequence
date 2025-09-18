@@ -12,31 +12,46 @@ pub fn create_profile(
     handle: String,
     contact_prices: Vec<ContactPriceTier>,
     response_time_hours: u16,
+    resume_link: Option<String>, // Optional resume link for zk-compression
 ) -> Result<()> {
     let profile = &mut ctx.accounts.profile;
     let clock = Clock::get()?;
 
+    // Validation for public indexable data
     require!(skills.len() <= 10, ProfileManagerError::TooManySkills);
-    require!(bio.len() <= 500, ProfileManagerError::BioTooLong);
+    require!(bio.len() <= 280, ProfileManagerError::BioTooLong);
     require!(handle.len() >= 3 && handle.len() <= 30, ProfileManagerError::InvalidHandle);
     require!(response_time_hours > 0 && response_time_hours <= 168, ProfileManagerError::InvalidResponseTime);
 
+    // Public indexable data (searchable by Helius)
     profile.owner = ctx.accounts.owner.key();
-    profile.skills = skills;
+    profile.skills = skills.clone();
     profile.experience_years = experience_years;
-    profile.region = region;
+    profile.region = region.clone();
     profile.bio = bio;
     profile.handle = handle.to_lowercase();
     profile.contact_prices = contact_prices;
     profile.response_time_hours = response_time_hours;
+
+    // Private data (will be set separately via compress_resume instruction)
+    profile.resume_merkle_tree = None;
+    profile.resume_leaf_index = None;
+    profile.resume_root_hash = None;
+
+    // Metadata
+    profile.is_public = true; // Default to public, can be changed later
     profile.created_at = clock.unix_timestamp;
-    profile.is_public = true;
-    profile.nft_mint = None;
+    profile.updated_at = clock.unix_timestamp;
     profile.bump = ctx.bumps.profile;
 
+    // Emit event for Helius indexing (only public data)
     emit!(ProfileCreated {
         owner: profile.owner,
         handle: profile.handle.clone(),
+        skills: skills,
+        region: region,
+        experience_years: experience_years,
+        is_public: profile.is_public,
         created_at: profile.created_at,
     });
 

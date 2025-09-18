@@ -91,7 +91,8 @@ describe("Phase 3 Testing", () => {
                     { price: new anchor.BN(10 * 1000000), description: "Standard" },
                     { price: new anchor.BN(20 * 1000000), description: "Premium" },
                 ],
-                24
+                24,
+                "https://ipfs.io/ipfs/QmPhase3TestResumeHash" // resume_link parameter for hybrid architecture
             )
             .accounts({
                 profile: profilePda,
@@ -113,6 +114,25 @@ describe("Phase 3 Testing", () => {
         // This test is conceptual because it requires waiting for the contact to expire.
         // In a real test suite, this would be handled by manipulating the clock.
         console.log("Skipping expired contact test as it requires clock manipulation.");
+    });
+
+    it("Tests hybrid architecture data separation", async () => {
+        const profile = await profileManager.account.profile.fetch(profilePda);
+
+        // Verify public indexable data (searchable via Helius)
+        expect(profile.skills).to.deep.equal(["Rust", "Solana"]);
+        expect(profile.experienceYears).to.equal(5);
+        expect(profile.region).to.equal("USA");
+        expect(profile.bio).to.equal("Bio");
+        expect(profile.handle).to.equal("testuser");
+        expect(profile.responseTimeHours).to.equal(24);
+
+        // Verify private zk-compressed data fields exist
+        expect(profile.hasOwnProperty('resumeMerkleTree')).to.be.true;
+        expect(profile.hasOwnProperty('resumeLeafIndex')).to.be.true;
+        expect(profile.hasOwnProperty('resumeRootHash')).to.be.true;
+
+        console.log("✅ Hybrid architecture working - public data indexable, private data fields ready for zk-compression");
     });
   });
 

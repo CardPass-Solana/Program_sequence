@@ -6,7 +6,14 @@
     "build": "anchor build",
     "test": "anchor test --skip-local-validator",
     "test-local": "anchor test",
-    "deploy": "anchor deploy"
+    "deploy": "anchor deploy",
+    "test:user-flow-01": "ANCHOR_PROVIDER_URL=http://localhost:8899 ANCHOR_WALLET=~/.config/solana/id.json npx ts-mocha -p ./tsconfig.json tests/user-flow-01-onboarding.ts --timeout 60000",
+    "test:user-flow-02": "ANCHOR_PROVIDER_URL=http://localhost:8899 ANCHOR_WALLET=~/.config/solana/id.json npx ts-mocha -p ./tsconfig.json tests/user-flow-02-contact-gate.ts --timeout 60000",
+    "test:user-flow-03": "ANCHOR_PROVIDER_URL=http://localhost:8899 ANCHOR_WALLET=~/.config/solana/id.json npx ts-mocha -p ./tsconfig.json tests/user-flow-03-hiring-bounty.ts --timeout 60000",
+    "test:user-flow-05": "ANCHOR_PROVIDER_URL=http://localhost:8899 ANCHOR_WALLET=~/.config/solana/id.json npx ts-mocha -p ./tsconfig.json tests/user-flow-05-integration.ts --timeout 120000",
+    "test:user-flows": "npm run test:user-flow-01 && npm run test:user-flow-02 && npm run test:user-flow-03 && npm run test:user-flow-05",
+    "test:scenarios": "ANCHOR_PROVIDER_URL=http://localhost:8899 ANCHOR_WALLET=~/.config/solana/id.json npx ts-mocha -p ./tsconfig.json tests/scenarios-a-and-b-test.ts --timeout 60000",
+    "test:all": "npm run test:scenarios && npm run test:user-flows"
   },
   "devDependencies": {
     "@coral-xyz/anchor": "^0.31.1",

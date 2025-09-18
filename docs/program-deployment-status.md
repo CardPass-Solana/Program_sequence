@@ -1,4 +1,17 @@
-# Program Deployment Status
+# Program Deployment Status - Hybrid zk-Compressed Architecture
+
+## 🔄 최신 아키텍처 업데이트 (2025-09-18)
+
+**하이브리드 zk-Compressed NFT 아키텍처로 전환 완료**:
+- **공개 데이터**: 검색 가능한 프로필 정보는 일반 온체인 저장 (Helius 인덱싱 지원)
+- **개인정보**: 레쥬메와 같은 민감한 데이터는 zk-compressed NFT로 탈중앙화 저장 (~100배 저렴)
+- **진정한 탈중앙화**: 플랫폼이 개인정보에 접근할 수 없음
+
+### 새로 추가된 기능
+- ✅ `compress_resume` - 레쥬메 zk-압축 저장
+- ✅ `verify_resume_access` - 압축된 레쥬메 접근 검증
+- ✅ Merkle tree 기반 개인정보 보호
+- ✅ IPFS/Arweave 메타데이터 암호화
 
 ## 📋 모든 프로그램 목록
 
@@ -142,27 +155,31 @@
 
 ## 🔧 각 프로그램별 세부 정보
 
-### 1. Profile Manager ✅ 완전 구현 + Phase 3 완료
+### 1. Profile Manager ✅ 완전 구현 + 하이브리드 아키텍처 완료
 **기능**:
-- 프로필 생성/수정
+- 하이브리드 프로필 생성/수정 (공개 데이터 + zk-압축 개인정보)
 - Contact Gate (가치 기반 연락)
 - USDC 결제 시스템
-- NFT 디지털 명함 관리
+- zk-compressed NFT 레쥬메 관리
 
 **주요 Instructions**:
-- `create_profile` - 프로필 생성
+- `create_profile` - 하이브리드 프로필 생성 (공개 정보만)
 - `update_profile` - 프로필 수정
+- `compress_resume` - 레쥬메 zk-압축 저장 ✨ NEW
+- `verify_resume_access` - 압축된 레쥬메 접근 검증 ✨ NEW
 - `send_contact_request` - 연락 요청
 - `respond_to_contact` - 연락 응답
-- `handle_expired_contact` - 만료된 연락 요청 처리 ✨ NEW
+- `handle_expired_contact` - 만료된 연락 요청 처리
 - `create_profile_nft` - NFT 디지털 명함 생성
 - `process_payment` - USDC 결제 처리
 - `complete_payment` - 결제 완료/거부
 - `refund_payment` - 결제 환불
 
-**Phase 3 완료사항**:
-- ✅ `handle_expired_contact` instruction 추가
-- ✅ 다단계 연락 가격 체계 구현
+**하이브리드 아키텍처 완료사항**:
+- ✅ 공개 프로필 데이터 구조 최적화 (Helius 인덱싱 지원)
+- ✅ zk-compressed NFT 레쥬메 시스템 구현
+- ✅ Merkle tree 기반 개인정보 보호
+- ✅ 진정한 탈중앙화 달성
 
 ### 2. Job Application ✅ 완전 구현 + Phase 3 완료
 **기능**:

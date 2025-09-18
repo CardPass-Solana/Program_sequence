@@ -25,6 +25,7 @@ pub mod profile_manager {
         handle: String,
         contact_prices: Vec<ContactPriceTier>,
         response_time_hours: u16,
+        resume_link: Option<String>,
     ) -> Result<()> {
         instructions::profile::create_profile(
             ctx,
@@ -35,6 +36,7 @@ pub mod profile_manager {
             handle,
             contact_prices,
             response_time_hours,
+            resume_link,
         )
     }
 
@@ -94,5 +96,20 @@ pub mod profile_manager {
 
     pub fn refund_payment(ctx: Context<RefundPayment>) -> Result<()> {
         instructions::payment::refund_payment(ctx)
+    }
+
+    pub fn compress_resume(
+        ctx: Context<CompressResume>,
+        resume_data_hash: [u8; 32],
+        metadata_uri: String,
+    ) -> Result<()> {
+        instructions::resume::compress_resume(ctx, resume_data_hash, metadata_uri)
+    }
+
+    pub fn verify_resume_access(
+        ctx: Context<VerifyResumeAccess>,
+        merkle_proof: Vec<[u8; 32]>,
+    ) -> Result<String> {
+        instructions::resume::verify_resume_access(ctx, merkle_proof)
     }
 }
