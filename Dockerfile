@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM node:20-bullseye
+FROM node:20-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive \
     RUSTUP_HOME=/opt/rust/rustup \
