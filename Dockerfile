@@ -1,9 +1,6 @@
 # syntax=docker/dockerfile:1.4
 FROM node:20-bullseye
 
-ARG SOLANA_VERSION=v1.18.17
-ARG ANCHOR_CLI_VERSION=v0.31.1
-
 ENV DEBIAN_FRONTEND=noninteractive \
     RUSTUP_HOME=/opt/rust/rustup \
     CARGO_HOME=/opt/rust/cargo \
@@ -28,14 +25,7 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path && \
     rustup default stable && \
     rustup component add rustfmt clippy
 
-# Install Solana CLI
-RUN curl -sSfL https://release.solana.com/${SOLANA_VERSION}/install | bash -s -- -b /usr/local/bin && \
-    solana --version
-
-# Install Anchor CLI matching the repo version
-RUN cargo install --git https://github.com/coral-xyz/anchor \
-        --tag ${ANCHOR_CLI_VERSION} anchor-cli --locked && \
-    anchor --version
+RUN curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
 
 WORKDIR /workspace
 
