@@ -34,4 +34,12 @@ pub enum ProfileManagerError {
     ContactNotExpired,
     #[msg("Invalid tier index")]
     InvalidTierIndex,
+    #[msg("Invalid metadata URI")]
+    InvalidMetadataUri,
+    #[msg("Metadata URI is too long")]
+    MetadataUriTooLong,
+    #[msg("No resume data available")]
+    NoResumeData,
+    #[msg("Invalid resume proof")]
+    InvalidResumeProof,
 }
