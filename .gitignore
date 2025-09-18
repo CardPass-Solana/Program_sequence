@@ -163,7 +163,8 @@ pip-delete-this-directory.txt
 # ===========================
 # Docker
 # ===========================
-.dockerignore
+# Keep Docker ignore file in version control
+!.dockerignore
 docker-compose.override.yml
 
 # ===========================
